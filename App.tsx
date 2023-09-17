@@ -1,138 +1,8 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import Svg, { Circle, Line } from "react-native-svg";
-
-const SIZE = 3;
-
-type PositionX = "left" | "center" | "right";
-type PositionY = "top" | "center" | "bottom";
-
-type Position = {
-  x: PositionX;
-  y: PositionY;
-};
-
-type CellSvgProps = {
-  position: Position;
-};
-
-export function getGridLinesCoords(position: Position) {
-  const result = [];
-  if (position.y === "bottom")
-    result.push({
-      x1: "0%",
-      y1: "0%",
-      x2: "100%",
-      y2: "0%",
-    });
-  if (position.x === "right")
-    result.push({
-      x1: "0%",
-      y1: "0%",
-      x2: "0%",
-      y2: "100%",
-    });
-  if (position.x === "center")
-    result.push({
-      x1: "0%",
-      y1: "0%",
-      x2: "0%",
-      y2: "100%",
-    });
-  if (position.y === "center")
-    result.push({
-      x1: "0%",
-      y1: "0%",
-      x2: "100%",
-      y2: "0%",
-    });
-  return result;
-}
-
-const CELL_WIDTH = 42;
-const CELL_HEIGHT = CELL_WIDTH;
-
-export function EmptyCellSvg({ position }: CellSvgProps) {
-  return (
-    <Svg width={CELL_WIDTH} height={CELL_HEIGHT}>
-      {getGridLinesCoords(position).map((lineCoords, index) => (
-        <Line key={index} stroke="black" strokeWidth="1" {...lineCoords} />
-      ))}
-    </Svg>
-  );
-}
-
-export function PlayerACellSvg({ position }: CellSvgProps) {
-  return (
-    <Svg width={CELL_WIDTH} height={CELL_HEIGHT}>
-      <Line
-        x1="20%"
-        y1="20%"
-        x2="80%"
-        y2="80%"
-        stroke="black"
-        strokeWidth="1"
-      />
-      <Line
-        x1="80%"
-        y1="20%"
-        x2="20%"
-        y2="80%"
-        stroke="black"
-        strokeWidth="1"
-      />
-      {getGridLinesCoords(position).map((lineCoords, index) => (
-        <Line key={index} stroke="black" strokeWidth="1" {...lineCoords} />
-      ))}
-    </Svg>
-  );
-}
-
-export function PlayerBCellSvg({ position }: CellSvgProps) {
-  return (
-    <Svg width={CELL_WIDTH} height={CELL_HEIGHT}>
-      <Circle
-        cx="50%"
-        cy="50%"
-        r="35%"
-        fill="white"
-        stroke="black"
-        strokeWidth="1"
-      />
-      {getGridLinesCoords(position).map((lineCoords, index) => (
-        <Line key={index} stroke="black" strokeWidth="1" {...lineCoords} />
-      ))}
-    </Svg>
-  );
-}
-
-type CellState = {
-  selected: "x" | "o" | undefined;
-  won: boolean;
-  position: Position;
-};
-
-type CellProps = {
-  cellState: CellState;
-  onSelect: () => void;
-};
-
-export function Cell({ cellState, onSelect }: CellProps) {
-  console.debug("Cell", cellState);
-  return (
-    <View style={{ backgroundColor: cellState.won ? "lightgreen" : "white" }}>
-      <Pressable onPress={onSelect}>
-        {!cellState.selected && <EmptyCellSvg position={cellState.position} />}
-        {cellState.selected === "x" && (
-          <PlayerACellSvg position={cellState.position} />
-        )}
-        {cellState.selected === "o" && (
-          <PlayerBCellSvg position={cellState.position} />
-        )}
-      </Pressable>
-    </View>
-  );
-}
+import { CellState } from "./src/CellState";
+import { Cell } from "./src/Cell";
+import { SIZE } from "./src/config";
 
 function getInitialGameState() {
   const result: Array<Array<CellState>> = [[]];
@@ -153,19 +23,30 @@ function getInitialGameState() {
 }
 
 export default function App() {
-  console.debug("App");
   const [gameState, setGameState] = useState(getInitialGameState());
   const [currentPlayer, setCurrentPlayer] = useState<"x" | "o">("x");
   const [isRunning, setIsRunning] = useState(true);
 
   function handleOnSelect(x: number, y: number) {
+    // cancel if cell is already selected
     if (gameState[y][x].selected) {
       return;
     }
+
+    // prepare new game state
     const newGameState = [...gameState];
     newGameState[y][x].selected = currentPlayer;
+
+    // toggle player
     setCurrentPlayer((prev) => (prev === "x" ? "o" : "x"));
 
+    //
+    // check if game is won (rows, columns, diagonals)
+    // - mark cells as won
+    // - stop game
+    //
+
+    // check rows
     for (let x = 0; x < SIZE; x++) {
       if (
         newGameState[x].reduce(
@@ -180,6 +61,7 @@ export default function App() {
       }
     }
 
+    // check columns
     for (let y = 0; y < SIZE; y++) {
       if (
         newGameState.reduce(
@@ -194,6 +76,7 @@ export default function App() {
       }
     }
 
+    // check diagonal - top left to bottom right
     let isDiagonal1Won = true;
     for (let x = 0; x < SIZE; x++) {
       for (let y = 0; y < SIZE; y++) {
@@ -213,6 +96,7 @@ export default function App() {
       setIsRunning(false);
     }
 
+    // check diagonal - bottom left to top right
     let isDiagonal2Won = true;
     for (let x = 0; x < SIZE; x++) {
       for (let y = 0; y < SIZE; y++) {
@@ -235,6 +119,7 @@ export default function App() {
       }
     }
 
+    // update game state
     setGameState(newGameState);
   }
 
