@@ -15,12 +15,12 @@ export function Cell({ cellState, onSelect, testID }: CellProps) {
       testID={testID || "cell-outer-component"}
     >
       <Pressable onPress={onSelect} testID="cell-inner-component">
-        {!cellState.selected && <EmptyCellSvg position={cellState.position} />}
-        {cellState.selected === "x" && (
+        {cellState.selected === "x" ? (
           <PlayerACellSvg position={cellState.position} />
-        )}
-        {cellState.selected === "o" && (
+        ) : cellState.selected === "o" ? (
           <PlayerBCellSvg position={cellState.position} />
+        ) : (
+          <EmptyCellSvg position={cellState.position} />
         )}
       </Pressable>
     </View>
