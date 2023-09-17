@@ -11,7 +11,7 @@ function getInitialGameState() {
     result[row] = [];
     for (let column = 0; column < SIZE; column++) {
       result[row][column] = {
-        selected: null,
+        selected: undefined,
         won: false,
         position: {
           x: column === 0 ? "left" : column === SIZE - 1 ? "right" : "center",
@@ -38,9 +38,6 @@ export default function App() {
     const newGameState = [...gameState];
     newGameState[y][x].selected = currentPlayer;
 
-    // toggle player
-    setCurrentPlayer((prev) => (prev === "x" ? "o" : "x"));
-
     // check if game is won (rows, columns, diagonals)
     checkForWinner({
       gameState: newGameState,
@@ -50,6 +47,9 @@ export default function App() {
 
     // update game state
     setGameState(newGameState);
+
+    // toggle player
+    setCurrentPlayer((prev) => (prev === "x" ? "o" : "x"));
   }
 
   function handleOnReset() {
@@ -66,11 +66,11 @@ export default function App() {
               return (
                 <Cell
                   key={columnIndex}
-                  cellState={gameState[rowIndex][columnIndex]}
+                  cellState={column}
                   onSelect={() =>
                     isRunning && handleOnSelect(columnIndex, rowIndex)
                   }
-                  testID={`cell-${columnIndex}-${rowIndex}-${currentPlayer}`}
+                  testID={`cell-${columnIndex}-${rowIndex}`}
                 />
               );
             })}
