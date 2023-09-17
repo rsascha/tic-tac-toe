@@ -5,7 +5,7 @@ import { CELL_HEIGHT, CELL_WIDTH } from "./config";
 
 export function PlayerBCellSvg({ position }: CellSvgProps) {
   return (
-    <Svg width={CELL_WIDTH} height={CELL_HEIGHT}>
+    <Svg width={CELL_WIDTH} height={CELL_HEIGHT} testID="player-b-cell">
       <Circle
         cx="50%"
         cy="50%"

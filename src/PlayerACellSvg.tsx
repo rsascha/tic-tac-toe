@@ -5,7 +5,7 @@ import { CELL_HEIGHT, CELL_WIDTH } from "./config";
 
 export function PlayerACellSvg({ position }: CellSvgProps) {
   return (
-    <Svg width={CELL_WIDTH} height={CELL_HEIGHT}>
+    <Svg width={CELL_WIDTH} height={CELL_HEIGHT} testID="player-a-cell">
       <Line
         x1="20%"
         y1="20%"

@@ -141,6 +141,7 @@ export default function App() {
                   onSelect={() =>
                     isRunning && handleOnSelect(columnIndex, rowIndex)
                   }
+                  testID={`cell-${columnIndex}-${rowIndex}-${currentPlayer}`}
                 />
               );
             })}
