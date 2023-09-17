@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { CellState } from "./src/CellState";
 import { Cell } from "./src/Cell";
 import { SIZE } from "./src/config";
+import { checkForWinner } from "./src/functions/checkForWinner";
+import { CellState } from "./src/types/CellState";
 
 function getInitialGameState() {
   const result: Array<Array<CellState>> = [[]];
@@ -40,84 +41,12 @@ export default function App() {
     // toggle player
     setCurrentPlayer((prev) => (prev === "x" ? "o" : "x"));
 
-    //
     // check if game is won (rows, columns, diagonals)
-    // - mark cells as won
-    // - stop game
-    //
-
-    // check rows
-    for (let x = 0; x < SIZE; x++) {
-      if (
-        newGameState[x].reduce(
-          (acc, curr) => acc && curr.selected === currentPlayer,
-          true
-        )
-      ) {
-        newGameState[x].forEach((cell) => {
-          cell.won = true;
-          setIsRunning(false);
-        });
-      }
-    }
-
-    // check columns
-    for (let y = 0; y < SIZE; y++) {
-      if (
-        newGameState.reduce(
-          (acc, curr) => acc && curr[y].selected === currentPlayer,
-          true
-        )
-      ) {
-        newGameState.forEach((row) => {
-          row[y].won = true;
-          setIsRunning(false);
-        });
-      }
-    }
-
-    // check diagonal - top left to bottom right
-    let isDiagonal1Won = true;
-    for (let x = 0; x < SIZE; x++) {
-      for (let y = 0; y < SIZE; y++) {
-        if (x === y && newGameState[x][y].selected !== currentPlayer) {
-          isDiagonal1Won = false;
-        }
-      }
-    }
-    if (isDiagonal1Won) {
-      for (let x = 0; x < SIZE; x++) {
-        for (let y = 0; y < SIZE; y++) {
-          if (x === y) {
-            newGameState[x][y].won = true;
-          }
-        }
-      }
-      setIsRunning(false);
-    }
-
-    // check diagonal - bottom left to top right
-    let isDiagonal2Won = true;
-    for (let x = 0; x < SIZE; x++) {
-      for (let y = 0; y < SIZE; y++) {
-        if (
-          x + y === SIZE - 1 &&
-          newGameState[x][y].selected !== currentPlayer
-        ) {
-          isDiagonal2Won = false;
-        }
-      }
-    }
-    if (isDiagonal2Won) {
-      for (let x = 0; x < SIZE; x++) {
-        for (let y = 0; y < SIZE; y++) {
-          if (x + y === SIZE - 1) {
-            newGameState[x][y].won = true;
-          }
-        }
-        setIsRunning(false);
-      }
-    }
+    checkForWinner({
+      gameState: newGameState,
+      currentPlayer,
+      onSetIsRunning: (value) => setIsRunning(value),
+    });
 
     // update game state
     setGameState(newGameState);

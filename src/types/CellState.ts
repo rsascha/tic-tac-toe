@@ -1,7 +1,8 @@
 import { Position } from "./Position";
+import { Player } from "./Player";
 
 export type CellState = {
-  selected: "x" | "o" | undefined;
+  selected: Player;
   won: boolean;
   position: Position;
 };

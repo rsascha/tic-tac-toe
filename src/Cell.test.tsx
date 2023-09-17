@@ -1,6 +1,6 @@
-import { render, fireEvent } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import { Cell } from "./Cell";
-import { CellState } from "./CellState";
+import { CellState } from "./types/CellState";
 
 describe("Cell", () => {
   const onSelectMock = jest.fn();

@@ -1,4 +1,4 @@
-import { Position } from "./Position";
+import { Position } from "../types/Position";
 
 export function getGridLinesCoords(position: Position) {
   const result = [];

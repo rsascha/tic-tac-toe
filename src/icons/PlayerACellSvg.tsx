@@ -1,7 +1,7 @@
 import Svg, { Line } from "react-native-svg";
-import { CellSvgProps } from "./CellSvgProps";
-import { getGridLinesCoords } from "./getGridLinesCoords";
-import { CELL_HEIGHT, CELL_WIDTH } from "./config";
+import { CellSvgProps } from "../types/CellSvgProps";
+import { getGridLinesCoords } from "../functions/getGridLinesCoords";
+import { CELL_HEIGHT, CELL_WIDTH } from "../config";
 
 export function PlayerACellSvg({ position }: CellSvgProps) {
   return (

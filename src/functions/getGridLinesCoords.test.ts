@@ -1,5 +1,5 @@
 import { getGridLinesCoords } from "./getGridLinesCoords";
-import { Position } from "./Position";
+import { Position } from "../types/Position";
 
 describe("getGridLinesCoords", () => {
   it("returns the correct grid lines for bottom position", () => {

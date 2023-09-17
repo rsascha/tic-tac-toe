@@ -1,8 +1,6 @@
 import { Pressable, View } from "react-native";
-import { CellState } from "./CellState";
-import { EmptyCellSvg } from "./EmptyCellSvg";
-import { PlayerACellSvg } from "./PlayerACellSvg";
-import { PlayerBCellSvg } from "./PlayerBCellSvg";
+import { EmptyCellSvg, PlayerACellSvg, PlayerBCellSvg } from "./icons";
+import { CellState } from "./types/CellState";
 
 type CellProps = {
   cellState: CellState;
