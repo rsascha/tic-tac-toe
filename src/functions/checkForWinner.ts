@@ -1,7 +1,7 @@
 import { checkColumns } from "./checkColumns";
-import { checkDiagonale } from "./checkDiagonale";
 import { checkRows } from "./checkRows";
 import { UpdateGameStateOptions } from "../types";
+import { checkDiagonaleUpperLeftToLowerRight } from "./checkDiagonaleUpperLeftToLowerRight";
 
 export function checkForWinner({
   gameState,
@@ -13,21 +13,19 @@ export function checkForWinner({
     currentPlayer,
     onSetIsRunning: (value) => onSetIsRunning(value),
   });
-
   checkColumns({
     gameState,
     currentPlayer,
     onSetIsRunning: (value) => onSetIsRunning(value),
   });
-
-  for (let i = 1; i <= 2; i++) {
-    checkDiagonale(
-      {
-        gameState,
-        currentPlayer,
-        onSetIsRunning: (value) => onSetIsRunning(value),
-      },
-      i
-    );
-  }
+  checkDiagonaleUpperLeftToLowerRight({
+    gameState,
+    currentPlayer,
+    onSetIsRunning: (value) => onSetIsRunning(value),
+  });
+  checkDiagonaleUpperLeftToLowerRight({
+    gameState,
+    currentPlayer,
+    onSetIsRunning: (value) => onSetIsRunning(value),
+  });
 }
