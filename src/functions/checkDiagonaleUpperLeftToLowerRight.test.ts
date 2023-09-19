@@ -46,4 +46,48 @@ describe("checkDiagonaleUpperLeftToLowerRight", () => {
     expect(setIsRunning).toHaveBeenCalledTimes(1);
     expect(setIsRunning).toHaveBeenCalledWith(false);
   });
+
+  it("should not update gameState with won, calls onSetIsRunning with false", () => {
+    const gameState: CellState[][] = [
+      [
+        { selected: "x", won: false, position: null },
+        { selected: null, won: false, position: null },
+        { selected: null, won: false, position: null },
+      ],
+      [
+        { selected: null, won: false, position: null },
+        { selected: "o", won: false, position: null },
+        { selected: null, won: false, position: null },
+      ],
+      [
+        { selected: null, won: false, position: null },
+        { selected: null, won: false, position: null },
+        { selected: "x", won: false, position: null },
+      ],
+    ];
+    const setIsRunning = jest.fn();
+    checkDiagonaleUpperLeftToLowerRight({
+      gameState,
+      currentPlayer: "x",
+      onSetIsRunning: (value) => setIsRunning(value),
+    });
+    expect(gameState).toStrictEqual([
+      [
+        { selected: "x", won: false, position: null },
+        { selected: null, won: false, position: null },
+        { selected: null, won: false, position: null },
+      ],
+      [
+        { selected: null, won: false, position: null },
+        { selected: "o", won: false, position: null },
+        { selected: null, won: false, position: null },
+      ],
+      [
+        { selected: null, won: false, position: null },
+        { selected: null, won: false, position: null },
+        { selected: "x", won: false, position: null },
+      ],
+    ]);
+    expect(setIsRunning).toHaveBeenCalledTimes(0);
+  });
 });

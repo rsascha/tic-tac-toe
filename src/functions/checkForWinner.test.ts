@@ -1,49 +1,48 @@
-import { CellState } from "../types/CellState";
 import { checkForWinner } from "./checkForWinner";
+import { getInitialGameState } from "./getInitialGameState";
+import { checkColumns } from "./checkColumns";
+import { checkRows } from "./checkRows";
+import { UpdateGameStateOptions } from "../types";
+import { checkDiagonaleUpperLeftToLowerRight } from "./checkDiagonaleUpperLeftToLowerRight";
+import { checkDiagonaleLowerLeftToUpperRight } from "./checkDiagonaleLowerLeftToUpperRight";
+
+jest
+  .mock("./checkRows")
+  .mock("./checkColumns")
+  .mock("./checkDiagonaleUpperLeftToLowerRight")
+  .mock("./checkDiagonaleLowerLeftToUpperRight");
 
 describe("checkForWinner", () => {
-  it("update gameState with won, calls onSetIsRunning with false", () => {
-    const gameState: CellState[][] = [
-      [
-        { selected: "x", won: false, position: { x: "left", y: "top" } },
-        { selected: "x", won: false, position: { x: "center", y: "top" } },
-        { selected: "o", won: false, position: { x: "right", y: "top" } },
-      ],
-      [
-        { selected: null, won: false, position: { x: "left", y: "center" } },
-        { selected: "x", won: false, position: { x: "center", y: "center" } },
-        { selected: "o", won: false, position: { x: "right", y: "center" } },
-      ],
-      [
-        { selected: "o", won: false, position: { x: "left", y: "bottom" } },
-        { selected: "x", won: false, position: { x: "center", y: "bottom" } },
-        { selected: null, won: false, position: { x: "right", y: "bottom" } },
-      ],
-    ];
-    const setIsRunning = jest.fn();
-    checkForWinner({
-      gameState,
-      currentPlayer: "x",
-      onSetIsRunning: (value) => setIsRunning(value),
-    });
-    expect(gameState).toStrictEqual([
-      [
-        { selected: "x", won: false, position: { x: "left", y: "top" } },
-        { selected: "x", won: true, position: { x: "center", y: "top" } },
-        { selected: "o", won: false, position: { x: "right", y: "top" } },
-      ],
-      [
-        { selected: null, won: false, position: { x: "left", y: "center" } },
-        { selected: "x", won: true, position: { x: "center", y: "center" } },
-        { selected: "o", won: false, position: { x: "right", y: "center" } },
-      ],
-      [
-        { selected: "o", won: false, position: { x: "left", y: "bottom" } },
-        { selected: "x", won: true, position: { x: "center", y: "bottom" } },
-        { selected: null, won: false, position: { x: "right", y: "bottom" } },
-      ],
-    ]);
-    expect(setIsRunning).toHaveBeenCalledTimes(1);
-    expect(setIsRunning).toHaveBeenCalledWith(false);
+  const gameState = getInitialGameState();
+  const currentPlayer = "x";
+  const onSetIsRunning = () => {};
+  const updateGameStateOptions = {
+    gameState,
+    currentPlayer,
+    onSetIsRunning,
+  };
+
+  it("should check if checkRows has been called", () => {
+    checkForWinner({ gameState, currentPlayer, onSetIsRunning });
+    expect(checkRows).toBeCalledWith(updateGameStateOptions);
+  });
+
+  it("should check if checkColumns has been called", () => {
+    checkForWinner({ gameState, currentPlayer, onSetIsRunning });
+    expect(checkColumns).toBeCalledWith(updateGameStateOptions);
+  });
+
+  it("should check if checkDiagonaleUpperLeftToLowerRight has been called", () => {
+    checkForWinner({ gameState, currentPlayer, onSetIsRunning });
+    expect(checkDiagonaleUpperLeftToLowerRight).toBeCalledWith(
+      updateGameStateOptions
+    );
+  });
+
+  it("should check if checkDiagonaleLowerLeftToUpperRight has been called", () => {
+    checkForWinner({ gameState, currentPlayer, onSetIsRunning });
+    expect(checkDiagonaleLowerLeftToUpperRight).toBeCalledWith(
+      updateGameStateOptions
+    );
   });
 });
